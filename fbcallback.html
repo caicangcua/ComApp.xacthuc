@@ -1,0 +1,87 @@
+<html>
+<body>
+    <script>
+
+        // localStorage feature detect
+        function supportsLocalStorage() {
+            return typeof (Storage) !== 'undefined';
+        }
+
+        function dotask(act, name, val,func) {
+            var err = 0, rst;
+            if (!supportsLocalStorage()) {
+                err = 1;
+            } else {
+                switch (act) {
+                    case 'set': {
+                        try {
+                            localStorage.setItem(name, val);
+                        } catch (e) {
+                            err = 2;
+                        }
+                        break;
+                    }
+                    case 'get': {
+                        rst = localStorage.getItem(name);   // Retrieve the item
+                        if (!rst) {                     // If there is data available                    
+                            err = 3;
+                        }
+                        break;
+                    }
+                    case 'remove': {
+                        localStorage.removeItem(name);
+                        break;
+                    }
+                    case 'reset': {
+                        localStorage.clear();
+                        break;
+                    }
+                }
+            }
+            return func(err, rst);
+        }
+
+
+        //if (window.location.hash.length > 3) {
+        //    var hash = window.location.hash.substring(1);
+        //    var access_token = hash.split('access_token=');
+        //    if (access_token.length > 1) {
+        //        //var path = "https://graph.facebook.com/me?";
+        //        var queryParams = [hash, 'callback=displayUser'];
+        //        var query = queryParams.join('&');
+        //        //var url = path + query;
+
+
+        //        //use jsonp to call the graph
+        //        //var script = document.createElement('script');
+        //        //script.src = url;
+        //        //document.body.appendChild(script);
+        //    };
+        //}
+
+
+
+        function get_query(url) {
+            var qs = url.substring(url.indexOf('?') + 1).split('&');
+            for (var i = 0, result = {}; i < qs.length; i++) {
+                qs[i] = qs[i].split('=');
+                result[qs[i][0]] = decodeURIComponent(qs[i][1]);
+            }
+            return result;
+        }
+
+
+        var fields = get_query(window.location.hash.substring(1));
+        if (fields.hasOwnProperty('access_token')){
+            var ex=fields['state'].split('tbh');
+            var loc = window.location, baseURL = loc.protocol + '//' + loc.hostname + (loc.port ? ':' + loc.port : '') + ex[0];
+            dotask('set', 'oAccessToken', 'access_token=' + fields['access_token'] + '&kind=' + ex[1] + '&baseurl=' + baseURL, function (a, b) { })
+            window.location.replace(baseURL);
+        }
+
+
+        //window.opener.openFB.oauthCallback(window.location.href);
+        //window.close();
+    </script>
+</body>
+</html>
