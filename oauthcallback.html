@@ -72,7 +72,8 @@
 
 
         var fields = get_query(window.location.hash.substring(1));
-        if (fields.hasOwnProperty('access_token')){
+        if (fields.hasOwnProperty('access_token')) {
+            debugger;
             var ex=fields['state'].split('tbh');
             var loc = window.location, baseURL = ex[3] + '/' +  ex[0];
             dotask('set', 'oAccessToken', 'access_token=' + fields['access_token'] + '&kind=' + ex[1] + '&baseurl=' + baseURL, function (a, b) { })
